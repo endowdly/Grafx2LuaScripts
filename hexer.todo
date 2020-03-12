@@ -1,0 +1,22 @@
+Hexer:
+    Refactor hexer:
+        -- File/Module based approach
+        ☐ 'Types' -> hexer.types.moon
+        ☐ 'Functions' -> hexer.functions.moon
+        ☐ 'Module' -> hexer.moon
+    ☐ Refactor hexer_spec.moon
+
+Document with LDoc:
+    ☐ hexer.moon
+    ✔ mathShortcuts.moon @done(20-03-11 21:20)
+    ✔ tableExt.moon @done(20-03-11 21:20)
+    ☐ drawHexGrid.moon
+
+Refactor drawHexGrid:
+    ☐ MVC
+        -- See 'Refactor hexer'
+    ☐ use table of functions instead of elseif chains
+
+build:
+    ☐ build.ps1
+    ☐ build.cmd

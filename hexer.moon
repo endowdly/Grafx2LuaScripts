@@ -3,26 +3,44 @@
 
 -- I despise Lua's approach to objects so we'll keep things functional! 
 
-Hexer = {} 
-Hexer.info = 
+info = 
 	author: 'endowdly'
 	version: '1.0.0'
-	note: 'Derived from the work by RedBlob' 
+	note: 'Derived from RedBlobGames' 
 
 require "tableExt"
 require "mathShortcuts"
 
 local *
 
+mtTuple = (f) ->
+	{
+	__add: (a, b) ->
+		f (a.x + b.x), (a.y + b.y)
+	__sub: (a, b) ->
+		f (a.x - b.x), (a.y - b.y)
+	__mul: (a, n) ->
+		f (a.x * n), (b.x * n)
+	__unm: (a) ->
+		f -a.x, -a.y
+	__eq: (a, b) ->
+		(a.x == b.x) and (a.y == b.y)
+	}
+
+mtPoint = mtTuple Point
+mtSize = mtTuple Size
+
 --- Creates a 2D point.
 -- @tparam number x The x-coordinate
 -- @tparam number y The y-coordinate
 -- @return table of number coordinates
 Point = (x, y) ->
-	{
+	point = 
 		x: x
 		y: y
-	}
+	setmetatable point, mtPoint
+	point
+	
 
 --- Creates a size.
 -- This is essentially just a point.
@@ -30,10 +48,23 @@ Point = (x, y) ->
 -- @tparam numebr y the y-dimension
 -- @return table of number dimensions
 Size = (x, y) ->
-	{
+	size = 
 		x: x
 		y: y
-	}
+	setmetatable size, mtSize
+	size
+
+mtHex = 
+	__add: (a, b) ->
+		Hex a.q + b.q, a.r + b.r, a.s + b.s
+	__sub: (a, b) ->
+		Hex a.q - b.q, a.r - b.r, a.s - b.s
+	__mul: (a, n) ->
+		Hex (a.q * n), (a.r * n), (a.s * n)
+	__unm: (a) ->
+		Hex -a.q, -a.r, -a.s
+	__eq: (a, b) ->
+		a.q == b.q and a.r == b.r and a.s == b.s
 
 --- Makes a new hexagon.
 -- Cube storage, cube constructor
@@ -43,11 +74,12 @@ Size = (x, y) ->
 -- @return table representing a hexagon
 Hex = (q, r, s) ->
 	assert q + r + s == 0, "Coordinates must be zero sum!"
-	{
+	hex = 
 		q: q 
 		r: r
 		s: s
-	}
+	setmetatable hex, mtHex
+	hex
 
 --- Makes a new hexagon using axial coordinates.
 -- Cube storage, axial constructor 
@@ -64,41 +96,6 @@ AxialHex = (q, r) ->
 -- @return table representing a hexagon
 VectorHex = (v) ->
 	Hex v.q, v.r, v.s
-
---- Equality. 
--- @param a the first hexagon
--- @param b the second hexagon
--- @treturn bool sameness of hexagon coordinates
-hexIsEqual = (a, b) ->
-	(a.q == b.q and a.r == b.r and a.s == b.s)
-
---- Not equality.
--- @param a the first hexagon
--- @param b the second hexagon
--- @treturn bool not sameness of hexagon coordinates
-hexIsNotEqual = (a, b) ->
-	not hexIsEqual
-	
---- Add two hexagons. 
--- @param a the first hexagon
--- @param b the second hexagon
--- @return a new hexagon 
-hexAdd = (a, b) ->
-	Hex a.q + b.q, a.r + b.r, a.s + b.s
-
---- Subtract two hexagons. 
--- @param a the first hexagon
--- @param b the second hexagon
--- @return a new hexagon 
-hexSubtract = (a, b) ->
-	Hex a.q - b.q, a.r - b.r, a.s - b.s
-
---- Multiply two hexagons. 
--- @param h the hexagon
--- @tparam number x the factor
--- @return a new hexagon 
-hexScale = (h, x) ->
-	Hex (h.q * x), (h.r * x), (h.s * x)
 
 --- Rotate hexagon one coordinate to the left, counter-clockwise or about -k.
 -- @param h the hexagon
@@ -129,7 +126,8 @@ hexDistance = (a, b) ->
 	hexLength (hexSubtract a, b)
 
 --- A table of directional constants in cube coordinates, one for each face.
-HexDirections = {
+HexDirections = 
+	{
 	-- We'll use cube coordinates for directions
 	-- (0, 0, 0) is our center, reference position, or null position
 	-- A hexagon is a circle (1 tau or 2 pi) with six points and six sides or pi/3.
@@ -142,18 +140,21 @@ HexDirections = {
 	Hex -1, 0, 1   -- towards the bottom-left side
 	Hex -1, 1, 0   -- towards the center-left side
 	Hex 0, 1, -1
-}
+	}
 
 --- A table of directional constants in cube coordinates, one for each vertex.
 -- @see HexDirections
-HexDiagonals = {
+HexDiagonals =
+	{
 	Hex 2, -1, -1   -- towards the top-right vertex
 	Hex 1, -2, 1    -- towards the bottom-right vertex
 	Hex -1, -1, 2   -- towards the bottom vertex
 	Hex -2, 1, 1    -- towards the bottom-left vertex
 	Hex -1, 2, -1   -- towards the top-left vertex
 	Hex 1, 1, -2    -- towards the top vertex
-}
+	}
+
+-- todo: Remove 'get' and rename to simply hexF
 
 --- Get a coordinate of a direction.
 -- @tparam n a number representing one of the six directions.
@@ -201,6 +202,8 @@ hexRound = (hex) ->
 		s = -q - r
 	
 	Hex q, r, s
+
+-- todo: embed these following tables.
 
 -- Layout
 -- So we have two hexagon layouts:
