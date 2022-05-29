@@ -7,12 +7,13 @@ local Hex = require("src.Hex")
 local Layout = require("src.Layout")
 local Orientation = require("src.Orientation")
 local Color = require("src.Color")
+local Sizer = require("src.ImageSize")
 local ____MathShortcuts = require("src.MathShortcuts")
 local min = ____MathShortcuts.min
 local max = ____MathShortcuts.max
 local floor = ____MathShortcuts.floor
 local hex, hexInfo, color, menu
-local MainMenu = {caption = "TACKLEBOX v1.1", label = {hex = "HEXER", color = "COLOR TEMPERATURE", info = "INFO"}, back = "Back", quit = "QUIT"}
+local MainMenu = {caption = "TACKLEBOX v1.1", label = {hex = "HEXER", color = "COLOR TEMPERATURE", sizer = "SIZER", info = "INFO"}, back = "Back", quit = "QUIT"}
 local Info = {caption = "TACKLEBOX - ABOUT", message = "Utility scripts by endowdly\n\nLetters inside () after scripts indicate what they affect:\ni: image, b: brush, p: palette\nc: color, t: text, l: layer\na: animation, n: pen\n\nContact: github.com/endowdly\n\nInspired by DB"}
 local ColorMenu = {caption = "TACKLEBOX - COLOR TEMP", label = {colorSet = "Color Set (p)", demo = "Demo (i,  p)"}, colorSet = {caption = "COLOR TEMP - COLOR SET", label = {temp = "Color Temperature (K)", index = "Color Index"}}}
 local HexMenu = {caption = "TACKLEBOX - HEXER", label = {rhombus = "Rhombus (i)", triangle = "Triangle (i)", hexagon = "Hexagon (i)", rectangle = "Rectangle (i)", fill = "Fill Canvas (i)", info = "Info"}, info = {caption = "HEXER - ABOUT", message = "Draw hexagon tiles maps.\n\nHexagons can be flat topped or pointy topped. Uncheck 'Flat' in layout panels to make pointy cells. Triangular maps will set their pointedness based on their orientation. Rectangular maps can be oriented along one of the three hex axes. Size includes origin row and grows symmetrically.\n\nInspired by RedBlobGames"}, basic = {label = {width = "Hex Width", height = "Hex Height", fgIdx = "Foreground Index", bgIdx = "Background Index", ox = "Origin X", oy = "Origin Y"}}, rhombus = {basic = "HEXER - RHOMBUS - BASICS", caption = "HEXER - RHOMBUS - LAYOUT", label = {flat = "Flat Top", qr = "Orient qr", rs = "Orient rs", sq = "Orient sq", rows = "Rows", cols = "Columns"}}, triangle = {basic = "HEXER - TRIANGLE - BASICS", caption = "HEXER - TRIANGLE - LAYOUT", label = {up = "Point Up", down = "Point Down", left = "Point Left", right = "Point Right", size = "Size"}}, hexagon = {basic = "HEXER - HEXAGON - BASICS", caption = "HEXER - HEXAGON - LAYOUT", label = {flat = "Flat Top", size = "Size"}}, rectangle = {basic = "HEXER - RECTANGLE - BASICS", caption = "HEXER - RECTANGLE - LAYOUT", label = {flat = "Flat Top", qr = "Orient qr", rs = "Orient rs", sq = "Orient sq", flip = "Flip Orientation", rows = "Rows", cols = "Columns"}}, fill = {basic = "HEXER - FILL - BASICS", caption = "HEXER - FILL - LAYOUT", label = {flat = "Flat Top"}}}
@@ -292,6 +293,11 @@ end
 local function dummy()
     return nil
 end
-menu = function() return selectbox(MainMenu.caption, MainMenu.label.hex, hex, MainMenu.label.color, color, MainMenu.label.info, info, MainMenu.quit, dummy) end
+menu = function()
+    local function sizer()
+        return Sizer.sizer(menu)
+    end
+    selectbox(MainMenu.caption, MainMenu.label.hex, hex, MainMenu.label.color, color, MainMenu.label.sizer, sizer, MainMenu.label.info, info, MainMenu.quit, dummy)
+end
 menu()
 return ____exports

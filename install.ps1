@@ -2,6 +2,8 @@
 
 using namespace System.IO
 
+param ([switch] $Force)
+
 data messages {
     @{
         TerminatingError = @{
@@ -119,8 +121,8 @@ Write-Information $messages.Information.CreateMissingDirs
 
 Write-Information $messages.Information.CopyTarget
 
-Copy-Item -Path $fromTargetDir -Filter *.lua -Destination $toScriptLibsDir -Recurse -Verbose -ErrorAction Continue
-Copy-Item -Path $luaLibPath -Destination $toScriptLibsDir -Verbose -ErrorAction Continue
-Copy-Item -Path $targetPath -Destination $toTargetDir -Verbose -ErrorAction Continue
+Copy-Item -Path $fromTargetDir -Filter *.lua -Destination $toScriptLibsDir -Recurse -Verbose -ErrorAction Continue -Force:$Force
+Copy-Item -Path $luaLibPath -Destination $toScriptLibsDir -Verbose -ErrorAction Continue -Force:$Force
+Copy-Item -Path $targetPath -Destination $toTargetDir -Verbose -ErrorAction Continue -Force:$Force
 
 exit 0

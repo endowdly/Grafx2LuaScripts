@@ -5,6 +5,8 @@ import * as Hex from './Hex'
 import * as Layout from './Layout'
 import * as Orientation from './Orientation'
 import * as Color from './Color'
+import * as Sizer from './ImageSize';
+// import { sizer } from './ImageSize';
 import { min, max, floor } from './MathShortcuts';
 
 const MainMenu = {
@@ -12,6 +14,7 @@ const MainMenu = {
     label: {
         hex: "HEXER",
         color: "COLOR TEMPERATURE",
+        sizer: "SIZER",
         info: "INFO",
     },
     back: "Back",
@@ -443,11 +446,15 @@ let info = () => {
 
 let dummy = () => null;
 
-let menu = () =>
+let menu = () => {
+    let sizer = () => Sizer.sizer(menu)
+
     selectbox(MainMenu.caption,
         MainMenu.label.hex, hex,
         MainMenu.label.color, color,
+        MainMenu.label.sizer, sizer,
         MainMenu.label.info, info,
         MainMenu.quit, dummy);
+    }
 
 menu();

@@ -52,6 +52,7 @@
         "setforecolor",
         "setpicturesize",
         "setsparepicturesize",
+        "snes",
         "statusmessage",
         "tstl",
         "unlicense",
