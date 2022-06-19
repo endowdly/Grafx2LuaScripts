@@ -1,0 +1,35 @@
+{
+  "name": "grafx2-lua-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "src"
+  },
+  "private": true,
+  "scripts": {
+    "build": "tstl",
+    "dev": "tstl --watch",
+    "test": "mocha --require ts-node/register test/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/endowdly/Grafx2LuaScripts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "unlicense",
+  "bugs": {
+    "url": "https://github.com/endowdly/Grafx2LuaScripts/issues"
+  },
+  "homepage": "https://github.com/endowdly/Grafx2LuaScripts#readme",
+  "devDependencies": {
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^7.0.2",
+    "chai": "^4.3.4",
+    "mocha": "^7.2.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.10",
+    "typescript-to-lua": "^0.39.6"
+  }
+}

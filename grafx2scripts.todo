@@ -1,0 +1,99 @@
+Hexer:
+    Refactor hexer:
+        -- File/Module based approach
+        ✘ 'Types' -> hexer.types.moon @cancelled(20-03-13 08:32)
+        ✘ 'Functions' -> hexer.functions.moon @cancelled(20-03-13 08:32)
+        ✘ 'Module' -> hexer.moon @cancelled(20-03-13 08:32)
+    ✘ Refactor hexer_spec.moon @cancelled(20-03-13 08:32)
+
+Document with LDoc:
+    ✘ hexer.moon @cancelled(20-03-13 08:32)
+    ✔ mathShortcuts.moon @done(20-03-11 21:20)
+    ✔ tableExt.moon @done(20-03-11 21:20)
+    ✘ drawHexGrid.moon @cancelled(20-03-13 08:32)
+
+Refactor drawHexGrid:
+    ✘ MVC @cancelled(20-03-13 08:32)
+        -- See 'Refactor hexer'
+    ✘ use table of functions instead of elseif chains @cancelled(20-03-13 08:32)
+
+Move to TypeScript:
+    -- Gasp!
+    -- I get
+        . more familiar syntax (easy 0 indexing!)
+        . type checking (!)
+        . better packing management (or at least more reliable)
+        . vscode integration
+        . better platform support (Windows 10)
+        . less dependencies (I don't need msys2 or mingw)
+
+    -- f lua, it was a passionate love affair albeit brief
+
+    ✔ add mocha @started(20-03-13 14:14) @done(20-03-13 14:43) @lasted(29m15s)
+    ✔ add chai @done(20-03-13 14:43)
+    ✔ set config for typescript-to-lua @done(20-03-13 14:54)
+    ✔ set config for node @done(20-03-13 14:43)
+    ✔ set config for vscode @done(20-03-13 15:51)
+    Understand how to write declaration files:
+        -- -> https://www.typescriptlang.org/docs/
+        ✔ Introduction @started(21-02-13 22:34) @done(21-02-13 22:38) @lasted(4m15s)
+        ✔ Declaration Reference @started(21-02-13 22:38) @done(21-02-13 22:46) @lasted(8m51s)
+        ✔ Library Structures @started(21-02-13 22:46) @done(21-02-13 22:51) @lasted(5m42s)
+        ✔ .d.ts Templates @done(21-02-13 22:51)
+        ✔ Do's and Don'ts @started(21-02-13 22:51) @done(21-02-13 22:54) @lasted(3m39s)
+        ✔ Deep Dive @done(21-02-13 22:55)
+        ✔ Publishing @started(21-02-13 22:55) @done(21-02-13 22:55) @lasted(31s)
+        ✔ Consumption @done(21-02-13 22:56)
+    Using declaration files for tstl:
+        -- -> https://typescripttolua.github.io/docs/advanced/writing-declarations
+        ✔ About Declaration Files @done(21-02-13 23:00)
+        ✔ Declare Keyword @done(21-02-13 23:00)
+        ✔ Export Keyword @started(21-02-13 23:00) @done(21-02-13 23:02) @lasted(2m13s)
+        ✔ Self Parameter @started(21-02-13 23:02) @done(21-02-13 23:03) @lasted(1m26s)
+        ✔ Comments and Annotations @started(21-02-13 23:03) @done(21-02-13 23:04) @lasted(1m23s)
+        ✔ Environmental Declarations @started(21-02-13 23:04) @done(21-02-13 23:05) @lasted(1m29s)
+        ✔ Advanced Types @started(21-02-13 23:05) @done(21-02-13 23:07) @lasted(2m4s)
+        ✔ Declaration Merging @started(21-02-13 23:07) @done(21-02-13 23:08) @lasted(1m50s)
+        ✔ Declaration Examples @started(21-02-13 23:08) @done(21-02-13 23:14) @lasted(6m51s)
+        ✔ NPM Publishing @done(21-02-13 23:14)
+        ✔ Debugging Declarations @done(21-02-13 23:14)
+    ✔ grafx2 declaration files @done(21-04-10 20:51)
+    ✔ drawHex.ts @done(21-04-10 20:51)
+        -- called it main.ts
+
+
+Keep it Functional:
+    ✔ Point.ts @done(20-03-13 19:22)
+    ✔ Size.ts @done(20-03-13 19:22)
+    ✔ MathShortcuts.ts @started(20-03-13 19:22) @done(20-03-17 15:42) @lasted(3d20h20m12s)
+    ✔ ArrayExtensions.ts @done(20-03-13 19:22) 
+
+    Hex.ts:
+        ✔ Layout/Orientation @done(20-03-17 14:19)
+        ✔ hex2Pixel @done(20-03-17 15:42)
+        ✔ pixel2Hex @done(20-03-17 15:42)
+        ✔ cornerOffset @done(20-03-17 15:42)
+        ✔ polyCorners @started(20-03-17 14:19) @done(20-03-17 15:42) @lasted(1h23m21s)
+        ✔ lerp @started(21-02-13 11:40) @done(21-02-13 11:45) @lasted(23s)
+        ✔ hexLerp @started(21-02-13 11:45) @done(21-02-13 11:45) @lasted(33s)
+        ✔ lineDraw @started(21-02-13 11:45) @done(21-02-13 11:55) @lasted(10m14s)
+        ✔ get neighbor functions @started(21-02-13 11:58) @done(21-02-13 13:49) @lasted(1h51m52s)
+        ☐ document
+
+Color:
+    ✔ psuedo code -> typescript @started(21-02-14 09:04) @done(21-02-14 11:32) @lasted(2h28m3s)
+    ☐ document
+
+Test: 
+    ✔ hexer.tests.ts @started(20-03-17 14:20) @done(20-03-17 15:42) @lasted(1h22m8s)
+    ✔ utility.test.ts @done(21-02-14 12:32)
+    ✔ types.test.ts @started(21-02-13 18:48) @done(21-02-13 22:17) @lasted(3h29m26s)
+    ☐ colortemp.test.ts
+
+Housecleaning:
+    Rename:
+        ✔ arrayExtensions -> Utility @done(21-02-14 12:32)
+
+? Build:
+    ✘ build.ps1 @cancelled(21-04-10 20:51)
+    ✘ build.cmd @cancelled(21-04-10 20:51)

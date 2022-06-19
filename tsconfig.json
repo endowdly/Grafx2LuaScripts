@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "lib": ["ESNext"],
+        "moduleResolution": "node",
+        "types": [ "typescript-to-lua/language-extensions","mocha" ],
+        "strict": true,
+        "rootDir": ".",
+        "outDir": "lua",
+        "sourceMap": true
+    },
+    "tstl": {
+        "luaTarget": "5.1",
+        "noHeader": true,
+        "noImplicitSelf": true,
+        // "luaBundleEntry": ".\\src\\main.ts",
+        // "luaBundle": "lua\\grafx2.lua" 
+    }
+}
