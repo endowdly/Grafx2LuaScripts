@@ -2,39 +2,57 @@
 
 using namespace System.IO
 
-param ([switch] $Force)
+param (
+    
+    # Specifies a path to one or more locations. Wildcards are permitted.
+    [Parameter(Mandatory = $true,
+        Position = 0,
+        ParameterSetName = "ParameterSetName",
+        ValueFromPipeline = $true,
+        ValueFromPipelineByPropertyName = $true,
+        HelpMessage = "Path to one or more locations.")]
+    [ValidateNotNullOrEmpty()]
+    [ValidateScript({
+            $di = [DirectoryInfo] $_
+        
+            $di.Exists -and $di.Name -eq 'grafx2'         
+        })]
+    [string[]]
+    $Destination
+    , 
+    [switch] $Force)
 
-data messages {
+data message {
     @{
         TerminatingError = @{
             PathNotFound = '{0} not found -- cannot automatically install!'
         }
 
-        Information =@{
+        Information      = @{
             CheckRequiredPaths = 'Looking for required paths...'
-            CreateMissingDirs = 'Making missing directories...'
-            CopyTarget = 'Copying targets...'
+            CreateMissingDirs  = 'Making missing directories...'
+            CopyTarget         = 'Copying targets...'
         }
-        Verbose = @{ 
+        Verbose          = @{ 
             Looking = 'Looking for {0} at -> {1}'
-            Found = '{0} found'
-            Exists = '{0} already exists'
+            Found   = '{0} found'
+            Exists  = '{0} already exists'
         }
     }
 
 }
 
-data config -SupportedCommand Convert-Path {
+data path -SupportedCommand Convert-Path {
     @{ 
         From = @{ 
             SourceDir  = (Convert-Path .) + '\lua\' 
             LuaLibPath = 'lualib_bundle.lua'
-            TargetDir     = 'src\'
+            TargetDir  = 'src\'
             TargetPath = 'main.lua'
         }
 
         To   = @{
-            Grafx2Dir     = (Convert-Path ~) + '\AppData\Local\Grafx2\' 
+            # Grafx2Dir     = (Convert-Path ~) + '\scoop\apps\grafx2\current' 
             ScriptDir     = 'share\grafx2\scripts\'
             ScriptLibsDir = 'libs\'
             SourceDir     = 'src\'
@@ -43,86 +61,80 @@ data config -SupportedCommand Convert-Path {
     }
 }
 
-$VerbosePreference = 'Continue'
 $InformationPreference = 'Continue'
 $ErrorActionPreference = 'Stop'
 
 function Invoke-Combine { [Path]::Combine.Invoke($args) }
 
-$fromTargetDir = Invoke-Combine $config.From.SourceDir $config.From.TargetDir
-$targetPath = Invoke-Combine $fromTargetDir $config.From.TargetPath
-$luaLibPath = Invoke-Combine $config.From.SourceDir $config.From.LuaLibPath
-$toScriptDir = Invoke-Combine $config.To.Grafx2Dir $config.To.ScriptDir
-$toScriptLibsDir = Invoke-Combine $toScriptDir $config.To.ScriptLibsDir
-$toTargetDir = Invoke-Combine $toScriptDir $config.To.TargetDir
 
-enum IOType {
-    File
-    Dir
-}
+filter Test-FileSystemInfo {
 
-function Get-Info ($x, $k) {
-    switch ($x) {
-        File { [FileInfo] $k }
-        Dir { [DirectoryInfo] $k }
+    Write-Verbose ($message.Verbose.Looking -f $_.Name, $_.FullName) 
+
+    if ($_.Exists) {
+        Write-Verbose ($message.Verbose.Found -f $_.Name) 
+        return
+    }
+
+    if ($_ -is [DirectoryInfo]) {
+        Write-Error -Exception ([DirectoryNotFoundException] ($message.TerminatingError.PathNotFound -f $_.Name))
+    }
+
+    if ($_ -is [FileInfo]) {
+        Write-Error -Exception ([FileNotFoundException] ($message.TerminatingError.PathNotFound -f $_.Name)) 
     }
 }
 
-filter Search-Path ([IOType] $x) {
-    $k = $_ 
-    $y = Info $x $k
 
-    Write-Verbose ($messages.Verbose.Looking -f $y.Name, $y.FullName) 
+filter New-MissingDir {
 
-    if (!$y.Exists) {
-        Write-Error -Exception ([DirectoryNotFoundException] ($messages.TerminatingError.PathNotFound -f $y.Name))
-    }
+    Write-Verbose ($message.Verbose.Looking -f $_.Name, $_.FullName)
 
-    Write-Verbose ($messages.Verbose.Found -f $y.Name)
-}
-
-
-filter New-IfMissing {
-    $k = $_ 
-    $x = [IOType]::Dir
-    $y = Info $x $k
-
-    Write-Verbose ($messages.Verbose.Looking -f $y.Name, $y.FullName)
-
-    if (!$y.Exists) {
-        New-Item -Path $y.FullName -ItemType Directory -Verbose | Out-Null
+    if (!$_.Exists) {
+        New-Item -Path $_.FullName -ItemType Directory | Out-Null
     }
     else {
-        Write-Verbose ($messages.Verbose.Exists -f $y.Name)
+        Write-Verbose ($message.Verbose.Exists -f $_.Name)
     }
 
 }
 
-Write-Information $messages.Information.CheckRequiredPaths
 
-@(
-    $config.To.Grafx2Dir
-    $config.From.SourceDir
+$fromTargetDir = Invoke-Combine $path.From.SourceDir $path.From.TargetDir
+$targetPath = Invoke-Combine $fromTargetDir $path.From.TargetPath
+$luaLibPath = Invoke-Combine $path.From.SourceDir $path.From.LuaLibPath
+$toScriptDir = $Destination.ForEach{ Invoke-Combine $_ $path.To.ScriptDir }
+$toScriptLibsDir = $toScriptDir.ForEach{ Invoke-Combine $_ $path.To.ScriptLibsDir }
+$toTargetDir = $toScriptDir.ForEach{ Invoke-Combine $_ $path.To.TargetDir }
+
+Write-Information $message.Information.CheckRequiredPaths
+
+[DirectoryInfo[]] $Destination + 
+[DirectoryInfo[]] $toScriptDir + 
+[DirectoryInfo[]] @(
+    $path.From.SourceDir
     $fromTargetDir
-    $toScriptDir
-) | Search-Path Dir
+) | Test-FileSystemInfo 
 
-@(
+[FileInfo[]] @(
     $targetPath
     $luaLibPath
-) | Search-Path File
+) | Test-FileSystemInfo 
 
-Write-Information $messages.Information.CreateMissingDirs
+Write-Information $message.Information.CreateMissingDirs
 
-@(
-    $toScriptLibsDir
-    $toTargetDir
-) | New-IfMissing
+[DirectoryInfo[]] $toScriptLibsDir +
+[DirectoryInfo[]] $toTargetDir |
+New-MissingDir
 
-Write-Information $messages.Information.CopyTarget
+Write-Information $message.Information.CopyTarget
 
-Copy-Item -Path $fromTargetDir -Filter *.lua -Destination $toScriptLibsDir -Recurse -Verbose -ErrorAction Continue -Force:$Force
-Copy-Item -Path $luaLibPath -Destination $toScriptLibsDir -Verbose -ErrorAction Continue -Force:$Force
-Copy-Item -Path $targetPath -Destination $toTargetDir -Verbose -ErrorAction Continue -Force:$Force
+$toScriptLibsDir.ForEach{
+    Copy-Item -Path $fromTargetDir -Filter *.lua -Destination $_ -Recurse -ErrorAction Continue -Force:$Force
+    Copy-Item -Path $luaLibPath -Destination $_ -ErrorAction Continue -Force:$Force
+}
+$toTargetDir.ForEach{
+    Copy-Item -Path $targetPath -Destination $_ -ErrorAction Continue -Force:$Force
+}
 
 exit 0
