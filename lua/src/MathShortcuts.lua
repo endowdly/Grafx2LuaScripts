@@ -16,7 +16,7 @@ local function sin(n)
     return math.sin(n)
 end
 local function pow(n, e)
-    return math.pow(n, e)
+    return n ^ e
 end
 local function log(n)
     return math.log(n)
@@ -30,11 +30,15 @@ end
 local function round(n)
     return math.floor(n + 0.5)
 end
+local function ceil(n)
+    return math.ceil(n)
+end
 local function clamp(n, min, max)
-    return ((n < min) and min) or (((n > max) and max) or n)
+    return n < min and min or (n > max and max or n)
 end
 ____exports.abs = abs
 ____exports.floor = floor
+____exports.ceil = ceil
 ____exports.sqrt = sqrt
 ____exports.cos = cos
 ____exports.sin = sin

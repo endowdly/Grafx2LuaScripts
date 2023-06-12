@@ -9,6 +9,7 @@ let log = (n: number) => Math.log(n);
 let max = (...n: number[]) => Math.max(...n);
 let min = (...n: number[]) => Math.min(...n);
 let round = (n: number) => Math.round(n);
+let ceil = (n: number) => Math.ceil(n);
 
 let clamp = (n: number, min: number, max: number) => 
     n < min 
@@ -20,6 +21,7 @@ let clamp = (n: number, min: number, max: number) =>
 export {
     abs,
     floor,
+    ceil,
     sqrt,
 
     cos,

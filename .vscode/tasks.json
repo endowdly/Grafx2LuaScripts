@@ -40,6 +40,6 @@
             "problemMatcher": [],
             "label": "npm: test",
             "detail": "mocha --require ts-node/register test/**/*.ts"
-        }
+        },
     ]
 }

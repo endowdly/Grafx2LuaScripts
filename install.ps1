@@ -12,11 +12,6 @@ param (
         ValueFromPipelineByPropertyName = $true,
         HelpMessage = "Path to one or more locations.")]
     [ValidateNotNullOrEmpty()]
-    [ValidateScript({
-            $di = [DirectoryInfo] $_
-        
-            $di.Exists -and $di.Name -eq 'grafx2'         
-        })]
     [string[]]
     $Destination
     , 

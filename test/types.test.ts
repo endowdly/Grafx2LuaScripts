@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Point, Orientation, Layout, } from '../src';
+import { Point, Orientation, Layout } from '../src';
 import { Size } from '../src';
 import { Hex } from '../src';
 

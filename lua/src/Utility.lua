@@ -1,4 +1,5 @@
-require("lualib_bundle");
+local ____lualib = require("lualib_bundle")
+local __TS__ArrayReduce = ____lualib.__TS__ArrayReduce
 local ____exports = {}
 local function sum(ls)
     return __TS__ArrayReduce(
@@ -11,18 +12,31 @@ local function range(start, stop, step)
     if step == nil then
         step = 1
     end
-    step = (((start > stop) and (step > 0)) and (function()
+    local ____temp_0
+    if start > stop and step > 0 then
         step = step * -1
-        return step
-    end)()) or step
-    if ((step > 0) and (start >= stop)) or ((step < 0) and (start <= stop)) then
+        ____temp_0 = step
+    else
+        ____temp_0 = step
+    end
+    step = ____temp_0
+    if step > 0 and start >= stop or step < 0 and start <= stop then
         return {}
     end
     local result = {}
     do
         local i = start
-        while (((step > 0) and (function() return i < stop end)) or (function() return i > stop end))() do
-            __TS__ArrayPush(result, i)
+        while true do
+            local ____temp_1
+            if step > 0 then
+                ____temp_1 = i < stop
+            else
+                ____temp_1 = i > stop
+            end
+            if not ____temp_1 then
+                break
+            end
+            result[#result + 1] = i
             i = i + step
         end
     end
@@ -32,18 +46,31 @@ local function rangeInclusive(start, stop, step)
     if step == nil then
         step = 1
     end
-    step = (((start > stop) and (step > 0)) and (function()
+    local ____temp_2
+    if start > stop and step > 0 then
         step = step * -1
-        return step
-    end)()) or step
-    if ((step > 0) and (start >= stop)) or ((step < 0) and (start <= stop)) then
+        ____temp_2 = step
+    else
+        ____temp_2 = step
+    end
+    step = ____temp_2
+    if step > 0 and start >= stop or step < 0 and start <= stop then
         return {}
     end
     local result = {}
     do
         local i = start
-        while (((step > 0) and (function() return i <= stop end)) or (function() return i >= stop end))() do
-            __TS__ArrayPush(result, i)
+        while true do
+            local ____temp_3
+            if step > 0 then
+                ____temp_3 = i <= stop
+            else
+                ____temp_3 = i >= stop
+            end
+            if not ____temp_3 then
+                break
+            end
+            result[#result + 1] = i
             i = i + step
         end
     end

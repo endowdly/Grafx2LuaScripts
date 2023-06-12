@@ -1,4 +1,5 @@
-require("lualib_bundle");
+local ____lualib = require("lualib_bundle")
+local __TS__ArrayMap = ____lualib.__TS__ArrayMap
 local ____exports = {}
 local ____MathShortcuts = require("src.MathShortcuts")
 local floor = ____MathShortcuts.floor
@@ -10,7 +11,7 @@ local max = ____MathShortcuts.max
 local Utility = require("src.Utility")
 local Point = require("src.Point")
 local function init(q, r, s)
-    if ((q + r) + s) ~= 0 then
+    if q + r + s ~= 0 then
         return {q = 0, r = 0, s = 0}
     end
     return {q = q, r = r, s = s}
@@ -55,7 +56,7 @@ local function subtract(a, b)
     )
 end
 local function equal(a, b)
-    return ((a.q == b.q) and (a.r == b.r)) and (a.s == b.s)
+    return a.q == b.q and a.r == b.r and a.s == b.s
 end
 local function rotateRight(h)
     return init(-h.r, -h.s, -h.q)
@@ -64,19 +65,13 @@ local function rotateLeft(h)
     return init(-h.s, -h.q, -h.r)
 end
 local function length(h)
-    return floor(
-        Utility.sum(
-            __TS__ArrayMap(
-                {h.q, h.r, h.s},
-                function(____, x) return abs(x) end
-            )
-        )
-    ) / 2
+    return floor(Utility.sum(__TS__ArrayMap(
+        {h.q, h.r, h.s},
+        function(____, x) return abs(x) end
+    ))) / 2
 end
 local function distance(a, b)
-    return length(
-        subtract(a, b)
-    )
+    return length(subtract(a, b))
 end
 local function round(h)
     local q = math.floor(h.q + 0.5)
@@ -85,7 +80,7 @@ local function round(h)
     local deltaQ = abs(q - h.q)
     local deltaR = abs(r - h.r)
     local deltaS = abs(s - h.s)
-    if (deltaQ > deltaR) and (deltaS > deltaS) then
+    if deltaQ > deltaR and deltaS > deltaS then
         q = -r - s
     elseif deltaR > deltaS then
         r = -q - s
@@ -96,8 +91,8 @@ local function round(h)
 end
 local function hexToPixel(layout, h)
     local m = layout.orientation
-    local x = ((m.forward[1] * h.q) + (m.forward[2] * h.r)) * layout.size.xDimension
-    local y = ((m.forward[3] * h.q) + (m.forward[4] * h.r)) * layout.size.yDimension
+    local x = (m.forward[1] * h.q + m.forward[2] * h.r) * layout.size.xDimension
+    local y = (m.forward[3] * h.q + m.forward[4] * h.r) * layout.size.yDimension
     return Point.init(x + layout.origin.x, y + layout.origin.y)
 end
 local function pixelToHex(layout, p)
@@ -105,12 +100,12 @@ local function pixelToHex(layout, p)
     local x = (p.x - layout.origin.x) / layout.size.xDimension
     local y = (p.y - layout.origin.y) / layout.size.yDimension
     local pt = Point.init(x, y)
-    local q = (m.backward[1] * pt.x) + (m.backward[2] * pt.y)
-    local r = (m.backward[3] * pt.x) + (m.backward[4] * pt.y)
+    local q = m.backward[1] * pt.x + m.backward[2] * pt.y
+    local r = m.backward[3] * pt.x + m.backward[4] * pt.y
     return fromAxial(q, r)
 end
 local function cornerOffset(layout, corner)
-    local angle = (Tau * (layout.orientation.startingAngle - corner)) / 6
+    local angle = Tau * (layout.orientation.startingAngle - corner) / 6
     local x = layout.size.xDimension * cos(angle)
     local y = layout.size.yDimension * sin(angle)
     return Point.init(x, y)
@@ -126,7 +121,7 @@ local function getCorners(layout, h)
     )
 end
 local function lerp(a, b, t)
-    return (a * (1 - t)) + (b * t)
+    return a * (1 - t) + b * t
 end
 local function hexLerp(a, b, t)
     local q = lerp(a.q, b.q, t)
@@ -141,9 +136,7 @@ local function hexLineDraw(a, b)
     local step = 1 / max(n, 1)
     return __TS__ArrayMap(
         Utility.range(0, n),
-        function(____, i) return round(
-            hexLerp(aNudge, bNudge, step * i)
-        ) end
+        function(____, i) return round(hexLerp(aNudge, bNudge, step * i)) end
     )
 end
 local function faceNeighbor(h, d)

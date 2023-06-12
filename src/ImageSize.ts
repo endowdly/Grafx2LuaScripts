@@ -1,5 +1,4 @@
 import { floor, sqrt } from './MathShortcuts'
-import { rangeInclusive } from './Utility'
 
 // Consider this an extension of DB's `Image > Set Image Size` functions
 // I dislike the layout and execution of the `sf_modify` function.

@@ -12,25 +12,30 @@ local OneSixth = 1 / 6
 local function normBit(n)
     return round(n * 255)
 end
+--- Given a temperature (in Kelvin), estimate an RGB equivalent
+-- 
+-- @param tmpKelvin - Temperature (in Kelvin) between 1000 and 40000
+-- @returns - RGB channel intensities (0-255)
+-- @description Ported from: http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
 local function fromTemperature(k)
     k = clamp(k, 1000, 40000) / 100
     return {
-        r = ((k <= 66) and 255) or clamp(
+        r = k <= 66 and 255 or clamp(
             329.698727446 * pow(k - 60, -0.1332047592),
             0,
             255
         ),
-        g = ((k <= 66) and clamp(
-            (99.4708025861 * log(k)) - 161.1195681661,
+        g = k <= 66 and clamp(
+            99.4708025861 * log(k) - 161.1195681661,
             0,
             255
-        )) or clamp(
+        ) or clamp(
             288.1221695283 * pow(k - 60, -0.0755148492),
             0,
             255
         ),
-        b = ((k >= 66) and 255) or (((k <= 19) and 0) or clamp(
-            (138.5177312231 * log(k - 10)) - 305.0447927307,
+        b = k >= 66 and 255 or (k <= 19 and 0 or clamp(
+            138.5177312231 * log(k - 10) - 305.0447927307,
             0,
             255
         ))
@@ -59,12 +64,12 @@ local function rgb2hsl(...)
     if minc == maxc then
         return {h = 0, s = 0, l = l}
     end
-    local s = ((l <= 0.5) and ((maxc - minc) / (maxc + minc))) or ((maxc - minc) / ((2 - maxc) - minc))
+    local s = l <= 0.5 and (maxc - minc) / (maxc + minc) or (maxc - minc) / (2 - maxc - minc)
     local rc = (maxc - r) / (maxc - minc)
     local gc = (maxc - g) / (maxc - minc)
     local bc = (maxc - b) / (maxc - minc)
-    local h = ((r == maxc) and (bc - gc)) or (((g == maxc) and ((2 + rc) - bc)) or ((4 + gc) - rc))
-    h = (h / 6) % 1
+    local h = r == maxc and bc - gc or (g == maxc and 2 + rc - bc or 4 + gc - rc)
+    h = h / 6 % 1
     return {
         h = normBit(h),
         s = normBit(s),
@@ -87,13 +92,13 @@ local function hsl2rgb(...)
     end
     local function v(m1, m2, h)
         h = h % 1
-        return ((h < OneSixth) and (m1 + (((m2 - m1) * h) * 6))) or (((h < 0.5) and m2) or (((h < TwoThird) and (m1 + (((m2 - m1) * (TwoThird - h)) * 6))) or m1))
+        return h < OneSixth and m1 + (m2 - m1) * h * 6 or (h < 0.5 and m2 or (h < TwoThird and m1 + (m2 - m1) * (TwoThird - h) * 6 or m1))
     end
     if s == 0 then
         return {r = l, g = l, b = l}
     end
-    local m2 = ((l <= 0.5) and (l * (1 + s))) or ((l + s) - (l * s))
-    local m1 = (2 * l) - m2
+    local m2 = l <= 0.5 and l * (1 + s) or l + s - l * s
+    local m1 = 2 * l - m2
     local r = v(m1, m2, h + OneThird)
     local g = v(m1, m2, h)
     local b = v(m1, m2, h - OneThird)

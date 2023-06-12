@@ -8,6 +8,8 @@ import * as Color from './Color'
 import * as Sizer from './ImageSize';
 // import { sizer } from './ImageSize';
 import { min, max, floor } from './MathShortcuts';
+import * as Image from './Image';
+import * as Brush from './Brush';
 
 const MainMenu = {
     caption: "TACKLEBOX v1.1",
@@ -15,6 +17,8 @@ const MainMenu = {
         hex: "HEXER",
         color: "COLOR TEMPERATURE",
         sizer: "SIZER",
+        image: "IMAGE",
+        brush: "BRUSH",
         info: "INFO",
     },
     back: "Back",
@@ -39,6 +43,21 @@ const ColorMenu = {
             index: "Color Index"
         }
     } 
+}
+
+const BrushMenu = {
+    caption: "TACKLBOX - BRUSH",
+    label: {
+        up: "Up a tenth (b)",
+        down: "Down a tenth (b)"
+    }
+}
+
+const ImageMenu = {
+    caption: "TACKLEBOX - IMAGE",
+    label: {
+        copySpare: "Copy Spare (i)", 
+    },
 }
 
 const HexMenu = {
@@ -438,6 +457,19 @@ let color = () =>
         ColorMenu.label.demo, colorFill,
         MainMenu.back, menu);
 
+
+
+let image = () =>
+    selectbox(ImageMenu.caption,
+        ImageMenu.label.copySpare, Image.copySpare,
+        MainMenu.back, menu);
+
+let brush = () =>
+    selectbox(BrushMenu.caption,
+        BrushMenu.label.up, Brush.brushUpOneTenth,
+        BrushMenu.label.down, Brush.brushDownOneTenth,
+        MainMenu.back, menu);
+
 let info = () => {
     messagebox(Info.caption, Info.message);
 
@@ -453,6 +485,8 @@ let menu = () => {
         MainMenu.label.hex, hex,
         MainMenu.label.color, color,
         MainMenu.label.sizer, sizer,
+        MainMenu.label.image, image,
+        MainMenu.label.brush, brush,
         MainMenu.label.info, info,
         MainMenu.quit, dummy);
     }

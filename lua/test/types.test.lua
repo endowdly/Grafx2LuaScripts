@@ -1,13 +1,13 @@
 local ____exports = {}
 local ____chai = require("test.chai")
 local expect = ____chai.expect
-local ____src = require("src")
+local ____src = require("index")
 local Point = ____src.Point
 local Orientation = ____src.Orientation
 local Layout = ____src.Layout
-local ____src = require("src")
+local ____src = require("index")
 local Size = ____src.Size
-local ____src = require("src")
+local ____src = require("index")
 local Hex = ____src.Hex
 describe(
     nil,
